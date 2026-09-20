@@ -1,0 +1,3 @@
+[submodule "rstack-editor"]
+	path = rstack-editor
+	url = https://github.com/rstackjs/rstack-editor.git

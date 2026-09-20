@@ -1,0 +1,23 @@
+{
+  "name": "rslint-zed-extension",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "rs lib",
+    "check": "rs check --type-check",
+    "fmt": "rs fmt",
+    "lint": "rs lint --type-check",
+    "test": "rs test run"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.2",
+    "rstack": "0.7.6",
+    "vscode-jsonrpc": "8.2.1"
+  },
+  "packageManager": "pnpm@12.5.1",
+  "engines": {
+    "node": "^26.0.0",
+    "pnpm": ">=11.0.0"
+  }
+}

@@ -1,0 +1,12 @@
+minimumReleaseAge: 1440
+minimumReleaseAgeExclude:
+  - "@rslint/*"
+  - "@rslib/*"
+  - "@rstest/*"
+  - "@rstackjs/*"
+  - rstack
+
+allowBuilds:
+  "@rspack/binding": true
+
+strictDepBuilds: true

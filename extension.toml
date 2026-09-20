@@ -1,0 +1,18 @@
+id = "rslint-lsp"
+name = "Rslint"
+description = "Rslint diagnostics and code actions for JavaScript and TypeScript"
+version = "0.1.0"
+schema_version = 1
+authors = ["Elecmonkey"]
+repository = "https://github.com/elecmonkey/rslint-zed-extension"
+
+[language_servers.rslint]
+name = "Rslint Language Server"
+languages = ["JavaScript", "JSX", "TypeScript", "TSX"]
+code_action_kinds = ["quickfix", "source", "source.fixAll"]
+
+[language_servers.rslint.language_ids]
+JavaScript = "javascript"
+JSX = "javascriptreact"
+TypeScript = "typescript"
+TSX = "typescriptreact"
