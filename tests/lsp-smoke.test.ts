@@ -1,10 +1,9 @@
-import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import fs from "node:fs";
 import { createRequire } from "node:module";
 import os from "node:os";
 import path from "node:path";
-import { test } from "rstack/test";
+import { expect, test } from "rstack/test";
 
 const repository = path.resolve(import.meta.dirname, "..");
 const require = createRequire(import.meta.url);
@@ -93,7 +92,9 @@ async function runSmokeTest(
       if (separator >= 0) {
         const header = stdout.subarray(0, separator).toString();
         const match = /Content-Length: (\d+)/i.exec(header);
-        assert(match, `invalid LSP header: ${header}`);
+        if (!match) {
+          throw new Error(`invalid LSP header: ${header}`);
+        }
         const length = Number(match[1]);
         const end = separator + 4 + length;
         if (stdout.length >= end) {
@@ -128,13 +129,10 @@ async function runSmokeTest(
       },
     });
     const initialized = await response(1);
-    assert.equal(
-      initialized.error,
-      undefined,
-      JSON.stringify(initialized.error),
-    );
-    assert(isRecord(initialized.result));
-    assert.equal(typeof initialized.result.capabilities, "object");
+    expect(initialized.error).toBeUndefined();
+    expect(isRecord(initialized.result)).toBe(true);
+    const result = initialized.result as Record<string, unknown>;
+    expect(typeof result.capabilities).toBe("object");
     send({ jsonrpc: "2.0", method: "initialized", params: {} });
     const documentPath = path.join(workspace, "index.ts");
     const documentUri = `file://${documentPath}`;
@@ -160,17 +158,16 @@ async function runSmokeTest(
       return (diagnosticsOf(message)?.length ?? 0) > 0;
     });
     const diagnostics = diagnosticsOf(diagnosticsMessage);
-    assert(
+    expect(
       diagnostics?.some(
         (diagnostic) =>
           diagnostic.source === "rslint" &&
           diagnostic.message.includes("[no-unused-vars]"),
       ),
-      JSON.stringify(diagnostics),
-    );
+    ).toBe(true);
     send({ jsonrpc: "2.0", id: 2, method: "shutdown" });
     const shutdown = await response(2);
-    assert.equal(shutdown.error, undefined, JSON.stringify(shutdown.error));
+    expect(shutdown.error).toBeUndefined();
     send({ jsonrpc: "2.0", method: "exit" });
   } finally {
     child.stdin.end();
@@ -180,7 +177,10 @@ async function runSmokeTest(
   const exitCode = await new Promise<number | null>((resolve) =>
     child.once("close", resolve),
   );
-  assert.equal(exitCode, 0, stderr);
+  if (exitCode !== 0) {
+    throw new Error(stderr);
+  }
+  expect(exitCode).toBe(0);
   console.log(
     `Rslint ${kind} LSP published diagnostics and shut down successfully.`,
   );

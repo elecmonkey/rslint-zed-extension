@@ -32,7 +32,7 @@ define.lint(({ js, rstestPlugin, ts }) => [
       ...rstestPlugin.configs.recommended.rules,
       "rstest/expect-expect": [
         "warn",
-        { assertFunctionNames: ["assert.*", "runSmokeTest"] },
+        { assertFunctionNames: ["runSmokeTest"] },
       ],
     },
   },

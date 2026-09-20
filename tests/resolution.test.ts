@@ -1,8 +1,7 @@
-import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { describe, test } from "rstack/test";
+import { describe, expect, test } from "rstack/test";
 import { resolveWorkspace } from "../src/launcher.ts";
 
 function packageAt(directory: string, name: string): void {
@@ -26,9 +25,9 @@ describe("workspace resolution", () => {
     packageAt(core, "@rslint/core");
 
     const resolution = resolveWorkspace({ workspace });
-    assert.equal(resolution.mode, "native");
-    assert.equal(resolution.coreDir, fs.realpathSync(core));
-    assert.equal(resolution.configPath, undefined);
+    expect(resolution.mode).toBe("native");
+    expect(resolution.coreDir).toBe(fs.realpathSync(core));
+    expect(resolution.configPath).toBeUndefined();
   });
 
   test("resolves the core through rstack and uses its config shim", () => {
@@ -50,11 +49,10 @@ describe("workspace resolution", () => {
     );
 
     const resolution = resolveWorkspace({ workspace });
-    assert.equal(resolution.mode, "bridged");
-    assert.equal(resolution.rstackDir, fs.realpathSync(rstack));
-    assert.equal(resolution.coreDir, fs.realpathSync(core));
-    assert.equal(
-      resolution.configPath,
+    expect(resolution.mode).toBe("bridged");
+    expect(resolution.rstackDir).toBe(fs.realpathSync(rstack));
+    expect(resolution.coreDir).toBe(fs.realpathSync(core));
+    expect(resolution.configPath).toBe(
       path.join(fs.realpathSync(rstack), "dist/rslintConfig.js"),
     );
   });
@@ -76,7 +74,7 @@ describe("workspace resolution", () => {
     packageAt(core, "@rslint/core");
 
     const resolution = resolveWorkspace({ workspace });
-    assert.equal(resolution.mode, "native");
-    assert.equal(resolution.coreDir, fs.realpathSync(core));
+    expect(resolution.mode).toBe("native");
+    expect(resolution.coreDir).toBe(fs.realpathSync(core));
   });
 });
